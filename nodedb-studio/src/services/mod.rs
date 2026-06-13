@@ -2,3 +2,4 @@
 //! a NodeDB-client-backed impl plugs in here later.
 
 pub mod connection_service;
+pub mod error;
