@@ -11,7 +11,7 @@ Wire the existing UI skeleton's `ConnectionService` seam to the live `nodedb-cli
 
 - [ ] **SEAM-01**: `ConnectionService` is an async trait (via `async_trait`) whose methods cover the core data path; the existing `MockConnectionService` still satisfies it for offline/dev/test
 - [ ] **SEAM-02**: A `NodeDbConnectionService` implements the trait by wrapping `nodedb-client`'s `NativeClient` / `NodeDb` trait, and is the impl provided in `app.rs` when a real connection is opened
-- [ ] **SEAM-03**: All client errors surface as the studio's typed `thiserror` error (mapped from `NodeDbError`), never `unwrap`/`panic`/`Result<T, String>`
+- [x] **SEAM-03**: All client errors surface as the studio's typed `thiserror` error (mapped from `NodeDbError`), never `unwrap`/`panic`/`Result<T, String>`
 - [ ] **SEAM-04**: Async work runs at the seam via `use_resource`/`use_action` (never blocking the main thread, never holding a signal guard across `.await`); wired views render loading, empty, and error states
 
 ### Connection & auth
@@ -88,7 +88,7 @@ Deferred. Acknowledged but not in this roadmap.
 |-------------|-------|--------|
 | SEAM-01 | Phase 1 — Async Seam & Error Foundation | Pending |
 | SEAM-02 | Phase 1 — Async Seam & Error Foundation | Pending |
-| SEAM-03 | Phase 1 — Async Seam & Error Foundation | Pending |
+| SEAM-03 | Phase 1 — Async Seam & Error Foundation | Complete |
 | SEAM-04 | Phase 1 — Async Seam & Error Foundation | Pending |
 | CONN-01 | Phase 2 — Connect, Auth & Capabilities | Pending |
 | CONN-02 | Phase 2 — Connect, Auth & Capabilities | Pending |
