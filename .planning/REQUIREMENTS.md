@@ -84,17 +84,43 @@ Deferred. Acknowledged but not in this roadmap.
 
 ## Traceability
 
-Populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (to be filled by roadmapper) | | |
+| SEAM-01 | Phase 1 — Async Seam & Error Foundation | Pending |
+| SEAM-02 | Phase 1 — Async Seam & Error Foundation | Pending |
+| SEAM-03 | Phase 1 — Async Seam & Error Foundation | Pending |
+| SEAM-04 | Phase 1 — Async Seam & Error Foundation | Pending |
+| CONN-01 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-02 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-03 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-04 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-05 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-06 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-07 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| QURY-01 | Phase 3 — SQL Query Editor | Pending |
+| QURY-02 | Phase 3 — SQL Query Editor | Pending |
+| QURY-03 | Phase 3 — SQL Query Editor | Pending |
+| QURY-04 | Phase 3 — SQL Query Editor | Pending |
+| QURY-05 | Phase 3 — SQL Query Editor | Pending |
+| COLL-01 | Phase 4 — Collection Management | Pending |
+| COLL-02 | Phase 4 — Collection Management | Pending |
+| COLL-03 | Phase 4 — Collection Management | Pending |
+| COLL-04 | Phase 4 — Collection Management | Pending |
+| COLL-05 | Phase 4 — Collection Management | Pending |
+| BROW-01 | Phase 5 — Document & KV Browser | Pending |
+| BROW-02 | Phase 5 — Document & KV Browser | Pending |
+| BROW-07 | Phase 5 — Document & KV Browser | Pending |
+| BROW-08 | Phase 5 — Document & KV Browser | Pending |
+| BROW-03 | Phase 6 — Vector, Graph & FTS Browser | Pending |
+| BROW-04 | Phase 6 — Vector, Graph & FTS Browser | Pending |
+| BROW-05 | Phase 6 — Vector, Graph & FTS Browser | Pending |
+| BROW-06 | Phase 6 — Vector, Graph & FTS Browser | Pending |
 
 **Coverage:**
 - v1 requirements: 29 total
-- Mapped to phases: TBD
-- Unmapped: TBD
+- Mapped to phases: 29
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-13*
-*Last updated: 2026-06-13 after initial definition*
+*Last updated: 2026-06-13 — traceability table populated after roadmap creation*
