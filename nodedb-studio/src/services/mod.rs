@@ -3,3 +3,4 @@
 
 pub mod connection_service;
 pub mod error;
+pub mod nodedb_service;

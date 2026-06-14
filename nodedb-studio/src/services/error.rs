@@ -8,10 +8,8 @@ use nodedb_client::NodeDbError;
 use nodedb_types::error::ErrorDetails;
 use thiserror::Error;
 
-// Foundation type for the whole phase: consumed by the async ConnectionService
-// seam and views in later plans (01-02..04). Not yet referenced from non-test
-// code in this plan, so suppress the binary-crate dead-code lint until then.
-#[allow(dead_code)]
+// The seam's Result error: returned by every `ConnectionService` method and
+// consumed by the views in later plans (01-03..04).
 #[derive(Debug, Error)]
 pub enum StudioError {
     #[error("connection error: {0}")]
