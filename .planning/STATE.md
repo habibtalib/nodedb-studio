@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-06-14T01:04:08.447Z"
+status: unknown
+stopped_at: Completed 01-03-PLAN.md
+last_updated: "2026-06-14T01:11:49.353Z"
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State: NodeDB Studio
@@ -30,7 +30,7 @@ progress:
 ## Current Position
 
 Phase: 01 (async-seam-error-foundation) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 | Field | Value |
 |-------|-------|
 | Current phase | 1 — Async Seam & Error Foundation |
@@ -78,6 +78,7 @@ Phase 1: [█████░░░░░] 50% (2/4 plans)
 
 ---
 | Phase 01 P02 | 8min | 2 tasks | 8 files |
+| Phase 01 P03 | 4 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,8 @@ Phase 1: [█████░░░░░] 50% (2/4 plans)
 | Activated `.cargo/config.toml` patch (01-01) | Local `../nodedb` checkout is the build source for reproducibility; `native` feature still enabled via the studio dep |
 | Async trait shape locked (01-02) | `ConnectionService` is `#[async_trait(?Send)]`; all 3 methods return `Result<_, StudioError>`; `connect` returns `Result<ActiveConnection, StudioError>` (unknown/offline mock name → `NotConnected`); forward-compatible with CONN-03 |
 | `NodeDbConnectionService` stub wraps `Option<NativeClient>` (01-02) | None this phase, returns `NotConnected` from every method (never panic/todo!); instantiated object-safe in app.rs; Phase 2 fills it via `ConnectionBuilder` |
+| `AsyncState<T>` + `from_value` primitive (01-03) | Plain-Rust loading/empty/error mapping (None→Loading, Some(Err)→Error, Some(Ok(empty))→Empty, Some(Ok(data))→Loaded), unit-tested without a renderer; `IsEmpty` distinguishes empty vs data; no `_ =>` on the studio's own enum |
+| `AsyncView` takes discrete props, not the generic enum (01-03) | Dioxus props need `Clone + PartialEq`; `StudioError`/`T` don't qualify, so the caller decodes `AsyncState` and passes `loading`/`empty`/`error`/`retriable` flags; AsyncView renders the three non-loaded states (Retry gated on `retriable`) and yields to caller markup for Loaded; scoped `#[allow(dead_code)]` until 01-04 consumes it |
 
 ### Constraints to Remember
 
@@ -124,7 +127,7 @@ None at this time. Phase 1 is unblocked.
 
 **To resume:** Phase 1, Plan 3 (`01-03-PLAN.md`). Plans 1-2 complete — `StudioError`, the async `#[async_trait(?Send)]` `ConnectionService` seam, `MockConnectionService` async impl, and the `NodeDbConnectionService` stub are all in place. SEAM-01/02/03 done; the async-state loading/empty/error pattern (and 01-04's Retry affordance) are next.
 
-**Stopped at:** Completed 01-02-PLAN.md
+**Stopped at:** Completed 01-03-PLAN.md
 
 **Baseline state:** Full UI skeleton on mock data, `MockConnectionService` sync only. No real async, no real client, no error surfaces in views.
 
