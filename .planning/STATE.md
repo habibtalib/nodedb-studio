@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-06-14T14:05:30.353Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-06-14T14:14:22.990Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 7
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State: NodeDB Studio
@@ -30,7 +30,7 @@ progress:
 ## Current Position
 
 Phase: 02 (connect-auth-capabilities) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 | Field | Value |
 |-------|-------|
 | Current phase | 1 — Async Seam & Error Foundation |
@@ -80,6 +80,7 @@ Phase 1: [██████████] 100% (4/4 plans)
 
 ---
 | Phase 02 P01 | 6 min | 2 tasks | 6 files |
+| Phase 02 P02 | 5 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,8 @@ Phase 1: [██████████] 100% (4/4 plans)
 | `derive_capabilities` bit-by-bit mapping (02-01) | Server `u64` bitmask → studio `Capabilities` via `nodedb_client::Capabilities::from_raw().supports_*()`: `CAP_GRAPHRAG→graph`, `CAP_FTS→fts`, `CAP_SPATIAL→spatial`, `CAP_STREAMING→streams`, `CAP_TIMESERIES→timeseries`, `CAP_CRDT→sync`; `vector=true` (core engine), `cluster=false`, `readonly=false` where no server bit exists (D-04/05/06, CONN-05); columnar/msgpack ignored; 6 bit-level tests |
 | `SavedConnection` reshaped to connect-config (02-01) | Holds host/port/auth_mode/username/default_database/tls/connect_timeout_secs only — NO secret field (D-01/D-09); added `AuthMode {Trust,Password,ApiKey,OidcBearer}` + `TlsSettings`; removed `ConnectionProfile` + `open()`; `MockConnectionService::connect` now synthesizes a session at the seam via `derive_capabilities(u64::MAX)` (readonly narrowed by `ConnStatus`); mock port fixed 2480→6433 |
 | `parse_identity`/`parse_databases` panic-free probe parsing (02-01) | `QueryResult` rows parsed via safe `Value::as_str()` + `.iter().position()`; fallbacks user→form_user→conn_name, role→"", current_database→default_db, databases→`vec![current_db]` (CONN-06); 4 fixture tests; scoped `dead_code` allow until Plan 02 consumes them |
+| `connect_real` live connect-and-probe (02-02) | Inherent method (NOT a trait change — trait shape locked): builds a `NativeClient` per auth mode, forces an identity `SELECT` round-trip BEFORE reading `capabilities()`/`server_version()` (lazy pool); probe `Err` → `StudioError` via `From<NodeDbError>`, returns without storing a client or producing a session (CONN-03); success holds the live client in `RefCell<Option<NativeClient>>` (Default-derived + `Rc`-object-safe) and `disconnect()` drops it (CONN-04..07); pure `describe_connection` fixture-tested; no `RefCell` borrow across `.await` |
+| `Secret` newtype + OIDC via PoolConfig (02-02) | `Secret(String)` has no derived `Debug`/`Serialize`/`Clone` and a manual `Debug` printing `Secret(***)`; `AuthInput` pairs it with each mode; secret never reaches `SavedConnection`/disk/`Debug`/`tracing` (D-01). `build_client` uses `ConnectionBuilder` for trust/password/api_key and a direct `PoolConfig` + `AuthMethod::OidcBearer` + `NativeClient::new` for OIDC (no builder setter; CONN-01/02). Scoped `dead_code` allow on the connect surface until Plan 03 wires the UI |
 
 ### Constraints to Remember
 
@@ -132,7 +135,7 @@ None at this time. Phase 1 is unblocked.
 
 **To resume:** Phase 1 is COMPLETE (4/4 plans) and ready for the phase verifier. `StudioError`, the async `#[async_trait(?Send)]` `ConnectionService` seam, the `MockConnectionService` async impl + `NodeDbConnectionService` stub, the `AsyncState`/`AsyncView` loading/empty/error primitive, and the SEAM-04 render-path proof (notifications popover self-fetching via `use_resource`) are all in place. SEAM-01/02/03/04 done. Next: run the Phase 1 verifier, then transition to Phase 2 (Connect, Auth & Capabilities).
 
-**Stopped at:** Completed 02-01-PLAN.md
+**Stopped at:** Completed 02-02-PLAN.md
 
 **Baseline state:** Full UI skeleton on mock data behind the now-async `ConnectionService` seam; the notifications popover renders live via the seam (Loading/Empty/Loaded/Error + Retry). No real client wired yet (Phase 2); other views still seeded from mock.
 

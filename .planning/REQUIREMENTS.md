@@ -16,13 +16,13 @@ Wire the existing UI skeleton's `ConnectionService` seam to the live `nodedb-cli
 
 ### Connection & auth
 
-- [ ] **CONN-01**: User can open a real session from the connection manager using a saved connection's host:port and credentials
-- [ ] **CONN-02**: User can connect with each auth mode the client supports — trust, password, API key, and OIDC bearer
-- [ ] **CONN-03**: A failed connection (bad host, refused, bad credentials) shows a clear error in the connection manager and does not enter the connected state
-- [ ] **CONN-04**: On successful connect, the studio enters the connected `Studio` shell bound to that live session
+- [x] **CONN-01**: User can open a real session from the connection manager using a saved connection's host:port and credentials
+- [x] **CONN-02**: User can connect with each auth mode the client supports — trust, password, API key, and OIDC bearer
+- [x] **CONN-03**: A failed connection (bad host, refused, bad credentials) shows a clear error in the connection manager and does not enter the connected state
+- [x] **CONN-04**: On successful connect, the studio enters the connected `Studio` shell bound to that live session
 - [x] **CONN-05**: The active connection's `Capabilities` are derived from the server's real `capabilities()`/`limits()`, so the rail items, admin sub-tabs, and views gate on actual server capabilities
 - [x] **CONN-06**: The connection chip / identity (user, role, current database, databases list, server version) reflects the real session, not mock values
-- [ ] **CONN-07**: User can disconnect and return to the connection manager, releasing the client session
+- [x] **CONN-07**: User can disconnect and return to the connection manager, releasing the client session
 
 ### SQL query editor
 
@@ -90,13 +90,13 @@ Deferred. Acknowledged but not in this roadmap.
 | SEAM-02 | Phase 1 — Async Seam & Error Foundation | Complete |
 | SEAM-03 | Phase 1 — Async Seam & Error Foundation | Complete |
 | SEAM-04 | Phase 1 — Async Seam & Error Foundation | Complete |
-| CONN-01 | Phase 2 — Connect, Auth & Capabilities | Pending |
-| CONN-02 | Phase 2 — Connect, Auth & Capabilities | Pending |
-| CONN-03 | Phase 2 — Connect, Auth & Capabilities | Pending |
-| CONN-04 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-01 | Phase 2 — Connect, Auth & Capabilities | Complete |
+| CONN-02 | Phase 2 — Connect, Auth & Capabilities | Complete |
+| CONN-03 | Phase 2 — Connect, Auth & Capabilities | Complete |
+| CONN-04 | Phase 2 — Connect, Auth & Capabilities | Complete |
 | CONN-05 | Phase 2 — Connect, Auth & Capabilities | Complete |
 | CONN-06 | Phase 2 — Connect, Auth & Capabilities | Complete |
-| CONN-07 | Phase 2 — Connect, Auth & Capabilities | Pending |
+| CONN-07 | Phase 2 — Connect, Auth & Capabilities | Complete |
 | QURY-01 | Phase 3 — SQL Query Editor | Pending |
 | QURY-02 | Phase 3 — SQL Query Editor | Pending |
 | QURY-03 | Phase 3 — SQL Query Editor | Pending |

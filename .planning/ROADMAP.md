@@ -42,7 +42,7 @@
   5. The connection chip (topbar) shows the real username, role, current database, databases list, and server version; disconnect (⌘D) returns to the connection manager and releases the client session
 **Plans**: 3 plans
   - [x] 02-01-PLAN.md — Data foundation: SavedConnection reshape (D-09), capability-map + identity-parse tested helpers (Wave 1)
-  - [ ] 02-02-PLAN.md — Connect-and-probe seam: build client per auth mode, force handshake, derive caps/identity, disconnect (Wave 2)
+  - [x] 02-02-PLAN.md — Connect-and-probe seam: build client per auth mode, force handshake, derive caps/identity, disconnect (Wave 2)
   - [ ] 02-03-PLAN.md — UI wiring: form rework (D-02), inline connect card (D-03), shell transition, identity chip, quick-switch + live e2e checkpoint (Wave 3)
 **UI hint**: yes
 
