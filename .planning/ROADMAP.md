@@ -40,7 +40,10 @@
   3. A refused connection, bad credentials, or network timeout shows a clear error message inside the connection manager — the app never freezes and never enters the connected state
   4. The rail, admin sub-tabs, and capability-gated views (Graph, Vector, FTS, Streams, etc.) reflect the server's real `capabilities()`/`limits()` response, not hardcoded mock flags
   5. The connection chip (topbar) shows the real username, role, current database, databases list, and server version; disconnect (⌘D) returns to the connection manager and releases the client session
-**Plans**: TBD
+**Plans**: 3 plans
+  - [ ] 02-01-PLAN.md — Data foundation: SavedConnection reshape (D-09), capability-map + identity-parse tested helpers (Wave 1)
+  - [ ] 02-02-PLAN.md — Connect-and-probe seam: build client per auth mode, force handshake, derive caps/identity, disconnect (Wave 2)
+  - [ ] 02-03-PLAN.md — UI wiring: form rework (D-02), inline connect card (D-03), shell transition, identity chip, quick-switch + live e2e checkpoint (Wave 3)
 **UI hint**: yes
 
 ### Phase 3: SQL Query Editor
@@ -100,7 +103,7 @@
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Async Seam & Error Foundation | 4/4 | Ready for verification | 2026-06-14 |
-| 2. Connect, Auth & Capabilities | 0/? | Not started | - |
+| 2. Connect, Auth & Capabilities | 0/3 | Planned | - |
 | 3. SQL Query Editor | 0/? | Not started | - |
 | 4. Collection Management | 0/? | Not started | - |
 | 5. Document & KV Browser | 0/? | Not started | - |
