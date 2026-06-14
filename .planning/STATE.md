@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 2 context gathered
-last_updated: "2026-06-14T12:37:44.377Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-06-14T14:05:30.353Z"
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 7
+  completed_plans: 5
 ---
 
 # Project State: NodeDB Studio
@@ -23,14 +23,14 @@ progress:
 
 **Core value:** A user can connect to a real NodeDB instance, run SQL, and browse/inspect their actual data — the studio shows live database state, not mock data.
 
-**Current focus:** Phase 01 — async-seam-error-foundation
+**Current focus:** Phase 02 — connect-auth-capabilities
 
 ---
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (connect-auth-capabilities) — EXECUTING
+Plan: 2 of 3
 | Field | Value |
 |-------|-------|
 | Current phase | 1 — Async Seam & Error Foundation |
@@ -79,6 +79,7 @@ Phase 1: [██████████] 100% (4/4 plans)
 | Phase 01 P04 | 12 min | 2 tasks | 5 files |
 
 ---
+| Phase 02 P01 | 6 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,9 @@ Phase 1: [██████████] 100% (4/4 plans)
 | `AsyncState<T>` + `from_value` primitive (01-03) | Plain-Rust loading/empty/error mapping (None→Loading, Some(Err)→Error, Some(Ok(empty))→Empty, Some(Ok(data))→Loaded), unit-tested without a renderer; `IsEmpty` distinguishes empty vs data; no `_ =>` on the studio's own enum |
 | `AsyncView` takes discrete props, not the generic enum (01-03) | Dioxus props need `Clone + PartialEq`; `StudioError`/`T` don't qualify, so the caller decodes `AsyncState` and passes `loading`/`empty`/`error`/`retriable` flags; AsyncView renders the three non-loaded states (Retry gated on `retriable`) and yields to caller markup for Loaded; scoped `#[allow(dead_code)]` until 01-04 consumes it |
 | SEAM-04 render-path proof in the notifications popover (01-04) | Popover self-fetches via `use_resource(service.notifications().await)` (Rc cloned before the async block, no guard across `.await`); decodes the read inline into the four `AsyncState` states (approach A — mirrors `from_value` because `StudioError` is not `Clone`); Loading/Empty/Error via `AsyncView`, Loaded via the grouped list; Retry gated on `is_retriable()` → `Resource::restart()`; topbar badge + app.rs seeding untouched. Removed dead_code allows on `is_retriable()`/`AsyncView` (now consumed); kept the allow on `AsyncState`/`from_value` (test-only call site this phase) |
+| `derive_capabilities` bit-by-bit mapping (02-01) | Server `u64` bitmask → studio `Capabilities` via `nodedb_client::Capabilities::from_raw().supports_*()`: `CAP_GRAPHRAG→graph`, `CAP_FTS→fts`, `CAP_SPATIAL→spatial`, `CAP_STREAMING→streams`, `CAP_TIMESERIES→timeseries`, `CAP_CRDT→sync`; `vector=true` (core engine), `cluster=false`, `readonly=false` where no server bit exists (D-04/05/06, CONN-05); columnar/msgpack ignored; 6 bit-level tests |
+| `SavedConnection` reshaped to connect-config (02-01) | Holds host/port/auth_mode/username/default_database/tls/connect_timeout_secs only — NO secret field (D-01/D-09); added `AuthMode {Trust,Password,ApiKey,OidcBearer}` + `TlsSettings`; removed `ConnectionProfile` + `open()`; `MockConnectionService::connect` now synthesizes a session at the seam via `derive_capabilities(u64::MAX)` (readonly narrowed by `ConnStatus`); mock port fixed 2480→6433 |
+| `parse_identity`/`parse_databases` panic-free probe parsing (02-01) | `QueryResult` rows parsed via safe `Value::as_str()` + `.iter().position()`; fallbacks user→form_user→conn_name, role→"", current_database→default_db, databases→`vec![current_db]` (CONN-06); 4 fixture tests; scoped `dead_code` allow until Plan 02 consumes them |
 
 ### Constraints to Remember
 
@@ -128,7 +132,7 @@ None at this time. Phase 1 is unblocked.
 
 **To resume:** Phase 1 is COMPLETE (4/4 plans) and ready for the phase verifier. `StudioError`, the async `#[async_trait(?Send)]` `ConnectionService` seam, the `MockConnectionService` async impl + `NodeDbConnectionService` stub, the `AsyncState`/`AsyncView` loading/empty/error primitive, and the SEAM-04 render-path proof (notifications popover self-fetching via `use_resource`) are all in place. SEAM-01/02/03/04 done. Next: run the Phase 1 verifier, then transition to Phase 2 (Connect, Auth & Capabilities).
 
-**Stopped at:** Phase 2 context gathered
+**Stopped at:** Completed 02-01-PLAN.md
 
 **Baseline state:** Full UI skeleton on mock data behind the now-async `ConnectionService` seam; the notifications popover renders live via the seam (Loading/Empty/Loaded/Error + Retry). No real client wired yet (Phase 2); other views still seeded from mock.
 
