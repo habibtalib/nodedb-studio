@@ -12,8 +12,8 @@ use std::rc::Rc;
 
 use dioxus::prelude::*;
 
-use crate::models::notification::Notification;
 use crate::modals::ModalHost;
+use crate::models::notification::Notification;
 use crate::services::connection_service::{ConnectionService, MockConnectionService};
 use crate::services::nodedb_service::NodeDbConnectionService;
 use crate::state::connection::ActiveConnection;
