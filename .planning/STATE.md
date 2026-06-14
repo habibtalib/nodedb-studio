@@ -3,17 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-06-13T18:08:09.226Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-06-14T01:04:08.447Z"
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State: NodeDB Studio
 
-**Last updated:** 2026-06-13
+**Last updated:** 2026-06-14
 **Milestone:** Seam-to-Real Wiring
 
 ---
@@ -29,11 +30,11 @@ progress:
 ## Current Position
 
 Phase: 01 (async-seam-error-foundation) — EXECUTING
-Plan: 2 of 4
+Plan: 3 of 4
 | Field | Value |
 |-------|-------|
 | Current phase | 1 — Async Seam & Error Foundation |
-| Current plan | 2 of 4 (Plan 1 complete) |
+| Current plan | 3 of 4 (Plans 1-2 complete) |
 | Phase status | In Progress |
 | Milestone status | In Progress |
 
@@ -41,8 +42,8 @@ Plan: 2 of 4
 
 ```
 [Phase 1] [Phase 2] [Phase 3] [Phase 4] [Phase 5] [Phase 6]
-[ ▓▓░░░ ] [  ---  ] [  ---  ] [  ---  ] [  ---  ] [  ---  ]
-Phase 1: [███░░░░░░░] 25% (1/4 plans)
+[ ▓▓▓░░ ] [  ---  ] [  ---  ] [  ---  ] [  ---  ] [  ---  ]
+Phase 1: [█████░░░░░] 50% (2/4 plans)
 ```
 
 ---
@@ -51,7 +52,7 @@ Phase 1: [███░░░░░░░] 25% (1/4 plans)
 
 | # | Phase | Status |
 |---|-------|--------|
-| 1 | Async Seam & Error Foundation | In Progress (1/4 plans) |
+| 1 | Async Seam & Error Foundation | In Progress (2/4 plans) |
 | 2 | Connect, Auth & Capabilities | Not started |
 | 3 | SQL Query Editor | Not started |
 | 4 | Collection Management | Not started |
@@ -66,15 +67,17 @@ Phase 1: [███░░░░░░░] 25% (1/4 plans)
 |--------|-------|
 | Phases total | 6 |
 | Phases complete | 0 |
-| Plans complete | 1 |
+| Plans complete | 2 |
 | Requirements mapped | 29/29 |
-| CI status | Green (fmt + clippy + nextest pass after 01-01) |
+| CI status | Green (build + clippy -D warnings + nextest 20/20 pass after 01-02) |
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | 6 min | 2 tasks | 6 files |
+| Phase 01 P02 | 8 min | 2 tasks | 8 files |
 
 ---
+| Phase 01 P02 | 8min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -90,6 +93,8 @@ Phase 1: [███░░░░░░░] 25% (1/4 plans)
 | `MockConnectionService` kept throughout | Offline/dev/test capability; it satisfies the same async trait after Phase 1 |
 | StudioError categorized + delegated `is_retriable()` (01-01) | 8 variants (Connection/Auth/NotFound/Conflict/ReadOnly/Setup/Server/NotConnected); `#[source]` preserves the `NodeDbError` cause chain; the only `_ =>` arm is the foreign `#[non_exhaustive]` `ErrorDetails` catch-all |
 | Activated `.cargo/config.toml` patch (01-01) | Local `../nodedb` checkout is the build source for reproducibility; `native` feature still enabled via the studio dep |
+| Async trait shape locked (01-02) | `ConnectionService` is `#[async_trait(?Send)]`; all 3 methods return `Result<_, StudioError>`; `connect` returns `Result<ActiveConnection, StudioError>` (unknown/offline mock name → `NotConnected`); forward-compatible with CONN-03 |
+| `NodeDbConnectionService` stub wraps `Option<NativeClient>` (01-02) | None this phase, returns `NotConnected` from every method (never panic/todo!); instantiated object-safe in app.rs; Phase 2 fills it via `ConnectionBuilder` |
 
 ### Constraints to Remember
 
@@ -117,9 +122,9 @@ None at this time. Phase 1 is unblocked.
 
 ## Session Continuity
 
-**To resume:** Phase 1, Plan 2 (`01-02-PLAN.md`). Plan 1 complete — `StudioError`, `native` feature, and `async-trait` are in place; the async `ConnectionService` seam + `NodeDbConnectionService` stub are next.
+**To resume:** Phase 1, Plan 3 (`01-03-PLAN.md`). Plans 1-2 complete — `StudioError`, the async `#[async_trait(?Send)]` `ConnectionService` seam, `MockConnectionService` async impl, and the `NodeDbConnectionService` stub are all in place. SEAM-01/02/03 done; the async-state loading/empty/error pattern (and 01-04's Retry affordance) are next.
 
-**Stopped at:** Completed 01-01-PLAN.md
+**Stopped at:** Completed 01-02-PLAN.md
 
 **Baseline state:** Full UI skeleton on mock data, `MockConnectionService` sync only. No real async, no real client, no error surfaces in views.
 
