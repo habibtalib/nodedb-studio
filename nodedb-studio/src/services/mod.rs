@@ -2,6 +2,8 @@
 //! a NodeDB-client-backed impl plugs in here later.
 
 pub mod async_state;
+pub mod capabilities_map;
 pub mod connection_service;
 pub mod error;
+pub mod identity;
 pub mod nodedb_service;
