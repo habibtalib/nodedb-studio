@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-04-PLAN.md (final plan of Phase 1)
-last_updated: "2026-06-14T01:27:56.219Z"
+stopped_at: Phase 2 context gathered
+last_updated: "2026-06-14T12:37:44.377Z"
 progress:
   total_phases: 6
   completed_phases: 1
@@ -128,7 +128,7 @@ None at this time. Phase 1 is unblocked.
 
 **To resume:** Phase 1 is COMPLETE (4/4 plans) and ready for the phase verifier. `StudioError`, the async `#[async_trait(?Send)]` `ConnectionService` seam, the `MockConnectionService` async impl + `NodeDbConnectionService` stub, the `AsyncState`/`AsyncView` loading/empty/error primitive, and the SEAM-04 render-path proof (notifications popover self-fetching via `use_resource`) are all in place. SEAM-01/02/03/04 done. Next: run the Phase 1 verifier, then transition to Phase 2 (Connect, Auth & Capabilities).
 
-**Stopped at:** Completed 01-04-PLAN.md (final plan of Phase 1)
+**Stopped at:** Phase 2 context gathered
 
 **Baseline state:** Full UI skeleton on mock data behind the now-async `ConnectionService` seam; the notifications popover renders live via the seam (Loading/Empty/Loaded/Error + Retry). No real client wired yet (Phase 2); other views still seeded from mock.
 
