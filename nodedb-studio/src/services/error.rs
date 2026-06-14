@@ -33,7 +33,6 @@ pub enum StudioError {
 impl StudioError {
     /// Drives the Retry affordance. Delegates to the wrapped NodeDbError;
     /// `NotConnected` is never retriable (it is studio-originated, not transient).
-    #[allow(dead_code)]
     pub fn is_retriable(&self) -> bool {
         match self {
             StudioError::NotConnected => false,

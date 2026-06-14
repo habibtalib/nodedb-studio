@@ -45,10 +45,7 @@ pub struct AsyncViewProps {
     pub empty_message: String,
 }
 
-// Consumed by plan 01-04 (wires this into the seam-backed views). Binary crate,
-// so the scoped allow mirrors AsyncState / StudioError until a non-test caller
-// references it.
-#[allow(dead_code)]
+// Consumed by the notification popover (01-04) and later wired views.
 #[component]
 pub fn AsyncView(props: AsyncViewProps) -> Element {
     if props.loading {
