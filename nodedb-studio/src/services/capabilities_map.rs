@@ -28,9 +28,8 @@ use crate::state::connection::Capabilities;
 /// Pure and total: every studio field is set explicitly from a confirmed bit or
 /// a documented default. No catch-all, no panic.
 ///
-/// Consumed by the live connect path (Plan 02) and the mock connect fallback
-/// (wired in Task 2 of this plan); scaffolded + bit-by-bit unit-tested here.
-#[allow(dead_code)]
+/// Consumed by the live connect path (Plan 02) and the mock connect fallback;
+/// scaffolded + bit-by-bit unit-tested here.
 pub fn derive_capabilities(bits: u64) -> Capabilities {
     let caps = ClientCaps::from_raw(bits);
     Capabilities {

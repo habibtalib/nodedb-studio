@@ -10,9 +10,10 @@ use async_trait::async_trait;
 
 use crate::data::mock;
 use crate::models::notification::Notification;
+use crate::services::capabilities_map::derive_capabilities;
 use crate::services::error::StudioError;
 use crate::state::connection::ActiveConnection;
-use crate::state::connections_registry::SavedConnection;
+use crate::state::connections_registry::{ConnStatus, SavedConnection};
 
 /// Async because the real client talks to NodeDB over the network. The Dioxus
 /// runtime is single-threaded, so `?Send` is correct (and `use_resource` has no
@@ -48,11 +49,43 @@ impl ConnectionService for MockConnectionService {
     }
 
     async fn connect(&self, name: &str) -> Result<ActiveConnection, StudioError> {
-        mock::connections()
+        // The saved entry is connect-config only now (D-09); the real connect
+        // path (Plan 02) derives identity/capabilities from a live server probe.
+        // The mock has no live server, so it synthesizes a plausible session for
+        // any connectable entry — keeping the shell working offline (seam
+        // discipline). Unknown / offline names map to NotConnected, preserving
+        // the existing connect-test behavior.
+        let conn = mock::connections()
             .into_iter()
             .find(|c| c.name == name)
-            .and_then(|c| c.open())
-            .ok_or(StudioError::NotConnected)
+            .filter(|c| c.status.is_connectable())
+            .ok_or(StudioError::NotConnected)?;
+
+        // All-bits mask so the mock shell keeps showing every capability tab,
+        // then narrow readonly to match the card's status.
+        let mut capabilities = derive_capabilities(u64::MAX);
+        capabilities.readonly = matches!(conn.status, ConnStatus::ReadOnly);
+
+        let user = conn.username.clone().unwrap_or_else(|| conn.name.clone());
+        let role = match conn.status {
+            ConnStatus::ReadOnly => "analyst (read-only)".to_string(),
+            ConnStatus::Online => "admin".to_string(),
+            ConnStatus::Offline => String::new(),
+        };
+        let current_database = conn
+            .default_database
+            .clone()
+            .unwrap_or_else(|| "default".to_string());
+
+        Ok(ActiveConnection {
+            name: conn.name.clone(),
+            sub: conn.sub.clone(),
+            user,
+            role,
+            capabilities,
+            databases: vec![current_database.clone()],
+            current_database,
+        })
     }
 }
 

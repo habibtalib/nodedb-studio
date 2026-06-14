@@ -11,42 +11,30 @@ use serde::ser::{Serialize, SerializeMap, Serializer};
 
 use crate::models::collection::{Collection, StorageMode};
 use crate::models::notification::{Notification, NotificationTarget, Severity};
-use crate::state::connection::{Capabilities, Capability};
-use crate::state::connections_registry::{ConnStatus, ConnectionProfile, SavedConnection};
+use crate::state::connection::Capability;
+use crate::state::connections_registry::{AuthMode, ConnStatus, SavedConnection, TlsSettings};
 
 /// The four saved connections shown on the Connection Manager. Three are
-/// reachable; `test-nodedb` is offline (no profile), matching the mockup.
+/// reachable; `test-nodedb` is offline, matching the mockup. These are
+/// connect-config only (D-09) — identity/capabilities come from the live server
+/// after connect, so the mock synthesizes a session at the seam instead.
 pub fn connections() -> Vec<SavedConnection> {
     vec![
         SavedConnection {
             name: "local-nodedb-dev".into(),
-            meta: "nodedb · localhost:2480".into(),
+            meta: "nodedb · localhost:6433".into(),
             sub: "nodedb · 8.4ms · 3 dbs".into(),
             status: ConnStatus::Online,
             db_count: Some(3),
             ping: Some("8.4ms".into()),
             server: "dev".into(),
-            profile: Some(ConnectionProfile {
-                user: "root".into(),
-                role: "admin".into(),
-                capabilities: Capabilities {
-                    graph: true,
-                    vector: true,
-                    streams: true,
-                    timeseries: true,
-                    spatial: true,
-                    fts: true,
-                    sync: false,
-                    cluster: false,
-                    readonly: false,
-                },
-                databases: vec![
-                    "analytics".into(),
-                    "events_log".into(),
-                    "social_graph".into(),
-                ],
-                default_database: "analytics".into(),
-            }),
+            host: "localhost".into(),
+            port: 6433,
+            auth_mode: AuthMode::Password,
+            username: Some("root".into()),
+            default_database: Some("analytics".into()),
+            tls: TlsSettings::default(),
+            connect_timeout_secs: None,
         },
         SavedConnection {
             name: "staging-cluster".into(),
@@ -56,36 +44,13 @@ pub fn connections() -> Vec<SavedConnection> {
             db_count: Some(12),
             ping: Some("22ms".into()),
             server: "dev".into(),
-            profile: Some(ConnectionProfile {
-                user: "hatta_admin".into(),
-                role: "admin".into(),
-                capabilities: Capabilities {
-                    graph: true,
-                    vector: true,
-                    streams: true,
-                    timeseries: true,
-                    spatial: true,
-                    fts: true,
-                    sync: true,
-                    cluster: true,
-                    readonly: false,
-                },
-                databases: vec![
-                    "analytics".into(),
-                    "events_log".into(),
-                    "social_graph".into(),
-                    "iot_telemetry".into(),
-                    "docs_corpus".into(),
-                    "cache_layer".into(),
-                    "staging_a".into(),
-                    "staging_b".into(),
-                    "audit_trail".into(),
-                    "temp_workspace".into(),
-                    "sandbox".into(),
-                    "archive_2025".into(),
-                ],
-                default_database: "analytics".into(),
-            }),
+            host: "localhost".into(),
+            port: 6433,
+            auth_mode: AuthMode::Password,
+            username: Some("hatta_admin".into()),
+            default_database: Some("analytics".into()),
+            tls: TlsSettings::default(),
+            connect_timeout_secs: None,
         },
         SavedConnection {
             name: "prod-replica-eu".into(),
@@ -95,42 +60,32 @@ pub fn connections() -> Vec<SavedConnection> {
             db_count: Some(28),
             ping: Some("98ms".into()),
             server: "dev".into(),
-            profile: Some(ConnectionProfile {
-                user: "hatta_ro".into(),
-                role: "analyst (read-only)".into(),
-                capabilities: Capabilities {
-                    graph: true,
-                    vector: true,
-                    streams: true,
-                    timeseries: true,
-                    spatial: true,
-                    fts: true,
-                    sync: true,
-                    cluster: true,
-                    readonly: true,
-                },
-                databases: vec![
-                    "analytics_prod".into(),
-                    "events_prod".into(),
-                    "social_prod".into(),
-                    "orders_prod".into(),
-                    "iot_prod".into(),
-                    "docs_prod".into(),
-                    "audit_prod".into(),
-                    "cache_prod".into(),
-                ],
-                default_database: "analytics_prod".into(),
-            }),
+            host: "eu-fra-1".into(),
+            port: 6433,
+            auth_mode: AuthMode::Password,
+            username: Some("hatta_ro".into()),
+            default_database: Some("analytics_prod".into()),
+            tls: TlsSettings {
+                enabled: true,
+                ..TlsSettings::default()
+            },
+            connect_timeout_secs: None,
         },
         SavedConnection {
             name: "test-nodedb".into(),
-            meta: "nodedb · localhost:2480".into(),
+            meta: "nodedb · localhost:6433".into(),
             sub: String::new(),
             status: ConnStatus::Offline,
             db_count: None,
             ping: None,
             server: "dev".into(),
-            profile: None,
+            host: "localhost".into(),
+            port: 6433,
+            auth_mode: AuthMode::Trust,
+            username: None,
+            default_database: None,
+            tls: TlsSettings::default(),
+            connect_timeout_secs: None,
         },
     ]
 }
