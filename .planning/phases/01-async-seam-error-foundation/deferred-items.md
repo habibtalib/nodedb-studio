@@ -3,7 +3,10 @@
 Out-of-scope discoveries logged during execution. Do NOT fix as part of the
 discovering plan; route to a follow-up.
 
-## Pre-existing `cargo fmt` violation in `app.rs` (found during 01-03)
+## [RESOLVED in d803f06] Pre-existing `cargo fmt` violation in `app.rs` (found during 01-03)
+
+> Resolved by orchestrator before plan 01-04: ran `cargo fmt --all`, committed as
+> `chore(01): fix import ordering in app.rs (fmt gate)` (d803f06). fmt gate now green.
 
 - **File:** `nodedb-studio/src/app.rs:12`
 - **Issue:** Import ordering is not rustfmt-clean — `use crate::modals::ModalHost;`
