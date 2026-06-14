@@ -21,19 +21,20 @@ A user can connect to a real NodeDB instance, run SQL, and browse/inspect their 
 - ✓ Screens for every engine/area rendering on mock data: explorer (document/vector/graph/fts/kv/spatial/timeseries/strict viewers), query console, graph explorer, streams (CDC/cron/MV/notify/topics), admin (cluster/raft/rbac/rls/shards/audit/nodes), connection manager, sync, designer — existing
 - ✓ Saved-connection registry + new-connection / preferences modals — existing
 - ✓ Conventions/CI established (AGENTS.md): no unwrap/panic, thiserror, sonic_rs, Dioxus 0.7 signal rules, fmt + clippy -D warnings + nextest gate — existing
+- ✓ **Async seam + error foundation (Phase 1):** `ConnectionService` is now an `#[async_trait(?Send)]` trait returning `Result<_, StudioError>`; `StudioError` (categorized `thiserror` enum mapped from `NodeDbError`, retriable-aware) is the seam's error; `NodeDbConnectionService` stub wraps `Option<NativeClient>` and is instantiable in `app.rs`; reusable `AsyncState<T>` + `AsyncView` loading/empty/error primitive, proven on the notifications feed via `use_resource`. Validated in Phase 1 (SEAM-01..04).
 
 ### Active
 
 <!-- This milestone: wire the seam to the real nodedb-client (core data path). Hypotheses until shipped. -->
 
-- [ ] Evolve `ConnectionService` into a single **async** trait that grows per capability (connect/auth, query, collections, per-engine reads), satisfied by both the mock and a real impl
-- [ ] Implement `NodeDbConnectionService` backed by `nodedb-client`'s `NativeClient` / `NodeDb` trait over MessagePack (:6433)
+- [ ] Evolve `ConnectionService` into a single **async** trait that grows per capability (connect/auth, query, collections, per-engine reads), satisfied by both the mock and a real impl — *(Phase 1: async trait + error model landed; per-capability growth continues)*
+- [ ] Implement `NodeDbConnectionService` backed by `nodedb-client`'s `NativeClient` / `NodeDb` trait over MessagePack (:6433) — *(Phase 1: instantiable stub wrapping `Option<NativeClient>` landed; real backing is Phase 2)*
 - [ ] Real connect/auth from the connection manager: trust / password / API key / OIDC; surface connect errors
 - [ ] Negotiate `Capabilities` from the server's actual `capabilities()` / `limits()` after connect (drive the shell from real flags, not mock)
 - [ ] SQL query editor wired to `execute_sql`: run query, render real `QueryResult` (columns/rows of `Value`) in the results grid, show errors, keep history
 - [ ] Collection management against the real client: list / create / drop / undrop / purge, inspect engine type + `GraphStats`, list dropped collections
 - [ ] Data browser on real data: documents (`document_get/put/delete`), vectors (`vector_search/insert/delete`), graph (`graph_traverse/stats`), full-text (`text_search`), KV
-- [ ] Async introduced **at the seam** (`use_resource` / `use_action`), with loading / empty / error states in the wired views; never block the main thread
+- [ ] Async introduced **at the seam** (`use_resource` / `use_action`), with loading / empty / error states in the wired views; never block the main thread — *(Phase 1: `AsyncState`/`AsyncView` pattern established and proven on notifications; later phases reuse it)*
 - [ ] Replace mock data in the wired views; keep `MockConnectionService` as a fallback/dev/test impl
 
 ### Out of Scope
@@ -74,7 +75,8 @@ A user can connect to a real NodeDB instance, run SQL, and browse/inspect their 
 | Desktop-only + native `nodedb-client` (:6433) for v1 | Codebase already chose it; native client exposes the full `NodeDb` trait with least glue; WASM can't do raw TCP | — Pending |
 | v1 = core data path (connect/auth + capabilities, SQL editor, collection mgmt, data browser); defer streams/admin/sync to v2 | Gets the daily-driver working end-to-end; some v2 areas aren't on the client trait yet | — Pending |
 | Keep a single `ConnectionService` trait, make it async, grow it per capability | Matches the existing one-seam context-provider pattern in `app.rs`; mock + real both satisfy it; minimal churn to consumers | — Pending |
-| Keep `MockConnectionService` as a parallel impl | Enables tests + offline dev; the seam is explicitly designed for swappable impls | — Pending |
+| Keep `MockConnectionService` as a parallel impl | Enables tests + offline dev; the seam is explicitly designed for swappable impls | ✓ Phase 1 — mock satisfies the async trait, 27 tests green |
+| Use `async-trait` `?Send` for the seam; categorized `StudioError` (not thin passthrough); `Option<NativeClient>` stub returning `NotConnected` | Dioxus 0.7 runs single-threaded (no Send bound on `use_resource`); categorized errors let views branch + offer Retry; stub gives Phase 2 a prepared slot | ✓ Phase 1 (SEAM-01..04) |
 
 ## Evolution
 
@@ -94,4 +96,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-13 after initialization (replanned against origin/main skeleton)*
+*Last updated: 2026-06-14 — Phase 1 (Async Seam & Error Foundation) complete: async `ConnectionService`, `StudioError`, `NodeDbConnectionService` stub, `AsyncState`/`AsyncView` pattern.*
