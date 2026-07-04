@@ -28,16 +28,21 @@ const STYLES: Asset = asset!("/assets/styles.css");
 // Dioxus components are PascalCase by convention; `App` is the root component.
 #[allow(non_snake_case)]
 pub fn App() -> Element {
-    // The single seam to the outside world. Provided as a trait object so a
-    // real client can replace the mock without touching consumers.
+    // The mock seam still backs the registry/notification feed (it works
+    // alongside the real connect engine — seam discipline). Provided as a trait
+    // object so consumers read it the same way regardless of impl.
     let service: Rc<dyn ConnectionService> = Rc::new(MockConnectionService);
 
-    // Prove the real-client stub is instantiable and object-safe behind the
-    // seam (SEAM-02). Not the active impl this phase — Phase 2 swaps it in —
-    // but constructing it here guarantees it compiles against the trait.
-    let _real: Rc<dyn ConnectionService> = Rc::new(NodeDbConnectionService::default());
+    // The real connect/disconnect engine. It owns the live `NativeClient`
+    // interior-mutably; the connection-manager card calls `connect_real` on it
+    // and every disconnect surface (⌘D, popover, palette) calls `disconnect`.
+    // Provided concretely (not behind `dyn`) so callers can reach the inherent
+    // `connect_real`/`disconnect` methods (the secret-carrying real path is not
+    // on the trait — the trait shape is intentionally unchanged this phase).
+    let real: Rc<NodeDbConnectionService> = Rc::new(NodeDbConnectionService::default());
 
     use_context_provider(|| service.clone());
+    use_context_provider(|| real.clone());
     use_context_provider(|| Signal::new(None::<ActiveConnection>));
     let mut registry = use_context_provider(|| Signal::new(Vec::<SavedConnection>::new()));
     let mut notifications = use_context_provider(|| Signal::new(Vec::<Notification>::new()));

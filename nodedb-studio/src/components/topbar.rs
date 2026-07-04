@@ -52,6 +52,12 @@ pub fn Topbar() -> Element {
                 onclick: move |e| { e.stop_propagation(); let cur = *popover.read(); popover.set(toggled(cur, Popover::Connection)); },
                 span { class: "dot" }
                 span { class: "name", "{c.name}" }
+                // Live identity from the connected session (CONN-06): user
+                // always, role only when the server returned one.
+                span { class: "user", "{c.user}" }
+                if !c.role.is_empty() {
+                    span { class: "role", "{c.role}" }
+                }
                 span { class: "engine", "{c.sub}" }
                 span { class: "chevron", "▾" }
                 if *popover.read() == Some(Popover::Connection) {

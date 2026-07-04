@@ -18,15 +18,6 @@
 //! Build is **synchronous and infallible** and opens no socket — the pool is
 //! lazy, so the network round-trip (and any connect/auth error) happens later on
 //! the first request (the identity probe in `nodedb_service`).
-//!
-//! NOTE: this module's surface is consumed by `nodedb_service::connect_real`,
-//! whose only caller (the connection-manager UI) is wired up in Plan 03. Until
-//! then the whole connect chain is unreachable from non-test code, so clippy's
-//! `dead_code` lint (a `-D warnings` CI gate failure) is suppressed by the
-//! scoped module allow below — mirroring the Plan 01 precedent for the
-//! identity/capability scaffolding. Removed in Plan 03 once the UI calls
-//! `connect_real`.
-#![allow(dead_code)]
 
 use std::time::Duration;
 

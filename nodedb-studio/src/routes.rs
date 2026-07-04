@@ -5,6 +5,8 @@
 //! share `StudioLayout`, which renders the persistent chrome (rail, topbar,
 //! statusbar) around the content `Outlet`.
 
+use std::rc::Rc;
+
 use dioxus::html::Key;
 use dioxus::prelude::*;
 
@@ -12,6 +14,7 @@ use crate::components::command_palette::CommandPalette;
 use crate::components::rail::Rail;
 use crate::components::statusbar::Statusbar;
 use crate::components::topbar::Topbar;
+use crate::services::nodedb_service::NodeDbConnectionService;
 use crate::state::connection::{ActiveConnection, Capability};
 use crate::state::ui::{ModalKind, Popover};
 
@@ -104,6 +107,7 @@ fn StudioLayout() -> Element {
     let mut popover = use_context::<Signal<Option<Popover>>>();
     let mut palette = use_context::<Signal<bool>>();
     let mut modal = use_context::<Signal<Option<ModalKind>>>();
+    let real = use_context::<Rc<NodeDbConnectionService>>();
 
     // If the current view requires a capability the active connection lacks
     // (e.g. after switching to a connection without Graph), fall back to
@@ -134,6 +138,8 @@ fn StudioLayout() -> Element {
             }
             Key::Character(c) if meta && c == "d" => {
                 e.prevent_default();
+                // Release the live client (CONN-07) BEFORE clearing the session.
+                real.disconnect();
                 active.set(None);
             }
             Key::Character(c) if meta && c == "," => {

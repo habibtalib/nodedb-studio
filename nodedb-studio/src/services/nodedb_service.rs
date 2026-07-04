@@ -38,15 +38,10 @@ use crate::state::connections_registry::SavedConnection;
 
 /// The identity probe: a single read-only `SELECT` that doubles as the forcing
 /// round-trip which populates the lazily-negotiated handshake metadata.
-///
-/// Consumed by `connect_real`, which the UI wires up in Plan 03 — hence the
-/// scoped `dead_code` allow on the connect surface below (Plan 01 precedent).
-#[allow(dead_code)]
 const IDENTITY_PROBE: &str = "SELECT current_user, current_role, current_database";
 
 /// Best-effort database-list probe (never fails the connect; falls back to the
 /// current database on error or permission denial).
-#[allow(dead_code)]
 const DATABASES_PROBE: &str = "SHOW DATABASES";
 
 #[derive(Default)]
@@ -95,13 +90,9 @@ fn describe_connection(
     }
 }
 
-// `connect_real` + `disconnect` (and the probe consts + the entire `auth`
-// module they pull in) are the live connect surface. The UI calls them in
-// Plan 03; until that lands, clippy's `dead_code` lint (a `-D warnings` CI gate
-// failure) is suppressed by this scoped allow — mirroring the Plan 01 precedent
-// for the identity/capability scaffolding. The allow is removed in Plan 03 once
-// the connection manager calls `connect_real`/`disconnect`.
-#[allow(dead_code)]
+// `connect_real` + `disconnect` are the live connect surface, wired into the
+// connection-manager card, the ⌘D handler, and both quick-switch surfaces
+// (Plan 03).
 impl NodeDbConnectionService {
     /// Open a real session: build the client, force the handshake via the
     /// identity probe, derive capabilities + identity, hold the live client, and

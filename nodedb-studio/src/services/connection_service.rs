@@ -30,6 +30,15 @@ pub trait ConnectionService {
 
     /// Open a session by saved-connection name. `StudioError::NotConnected` if
     /// the name is unknown or the connection is offline.
+    ///
+    /// The live UI now opens real sessions through the secret-carrying
+    /// `NodeDbConnectionService::connect_real` (the trait method cannot carry an
+    /// in-session secret, and the trait shape is intentionally unchanged this
+    /// phase). This name-only method is retained as the seam contract for the
+    /// later live data path and is exercised by the `MockConnectionService`
+    /// tests — hence the scoped `dead_code` allow (Plan 01/02 precedent) until a
+    /// later phase wires a name-only caller.
+    #[allow(dead_code)]
     async fn connect(&self, name: &str) -> Result<ActiveConnection, StudioError>;
 }
 
